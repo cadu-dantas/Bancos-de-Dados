@@ -1,0 +1,177 @@
+-------------------------- Neo4J
+O Neo4j é um banco de dados de grafo conhecido por sua capacidade de armazenar e consultar dados em um modelo de grafo altamente eficiente. Aqui estão alguns exemplos de comandos básicos no Neo4j utilizando a linguagem de consulta Cypher:
+
+
+Selecionar Projects
+Cria um novo database chamado "Fluxo"
+Clicar em start para iniciar o database "Fluxo"
+Clicar em "Open"
+Digitar os comandos abaixo:
+
+create(p:Pessoa{nome: 'José Alves', profissão: 'Desenvolvedor de sw'})
+create (c:Cidade {nome: 'São Paulo'})
+create (p)-[:RESIDE_EM]->(c)
+return *
+
+create(p:Pessoa{nome: 'José Pedro Silveira', profissão: 'Desenvolvedor de sw'})
+create (c:Cidade {nome: 'São Paulo'})
+create (p)-[:RESIDE_EM]->(c)
+return *
+
+create(p:Pessoa{nome: 'Pedro Nunes', profissão: 'Desenvolvedor de sw'})
+create (c:Cidade {nome: 'São Paulo'})
+create (p)-[:RESIDE_EM]->(c)
+return *
+
+create(p:Pessoa{nome: 'Carlos José', profissão: 'Tester'})
+create (c:Cidade {nome: 'São Paulo'})
+create (p)-[:RESIDE_EM]->(c)
+return *
+
+create(p:Pessoa{nome: 'Carla Pereira', profissão: 'Gerente'})
+create (c:Cidade {nome: 'Belo Horizonte'})
+create (p)-[:RESIDE_EM]->(c)
+return *
+
+MATCH (p:Pessoa)
+return *
+
+MATCH (p:Pessoa), (c:Cidade)
+return *
+-------------- revisar os ids corretos para as pessoas das consultas abaixo
+MATCH (p:Pessoa) where ID(p) = 2
+return *
+
+MATCH (p:Pessoa) where ID(p) = 2
+set p.nome= 'JOSÉ DA SILVA OLIVEIRA'
+return *
+
+MATCH (p:Pessoa) where ID(p) = 2
+delete p
+return *
+
+Vai dar erro por causa do relacionamento
+
+MATCH (p:Pessoa) where ID(p) = 2
+detach delete p
+return *
+
+
+------ deletando
+MATCH (c:Cidade) detach delete c return *
+
+MATCH (p:Pessoa) delete p return *
+
+-- novamente com relacionamento de cidade
+
+create(p:Pessoa{nome: 'José Alves', profissão: 'Desenvolvedor de sw'})
+create (c:Cidade {nome: 'São Paulo'})
+create (p)-[:RESIDE_EM]->(c)
+return *
+
+create(p:Pessoa{nome: 'José Pedro Silveira', profissão: 'Desenvolvedor de sw'})
+naõ funciona MATCH (p:Pessoa{nome: 'José Pedro Silveira'}),(c:Cidade {nome: 'São Paulo'})
+return *
+
+MATCH (p:Pessoa), (c:Cidade)
+WHERE (p:Pessoa{nome='José Pedro Silveira'}) AND (c:Cidade{nome='São Paulo'})
+CREATE (Pessoa)-[f:Mora]->(Cidade)
+RETURN Pessoa, f, Cidade
+
+
+match (a:Aluno {RA: “140001”})-[r:Cursou{Semestre: “2014S1”}]->(d:Disciplina)
+where r.NotaFinal >= 5 and r.Trancou = false
+return *
+
+----------------------------------------------
+
+Criar um nó sem label:
+CREATE (n {nome: “Usuário 1”})
+
+Consultar o nó recém criado:
+MATCH (n {nome: “Usuário 1”}) return n
+
+
+Criar alguns nós e algumas relações entre eles:
+Para montar um segundo exemplo mais construtivo, vamos criar um pequeno grafo com as autorizações de acesso aos módulos de um sistema. No caso abaixo, estamos criando 2 usuários, criando 2 módulos do sistema (compras e financeiro) e estamos definindo 4 relações descrevendo como é o perfil de acesso de cada usuário a cada módulo. Uma grande vantagem do Cypher é a legibilidade das consultas, o que faz com que grande parte dos usuários entendam facilmente o que está acontecendo.
+CREATE (u1:Usuário {Nome: “Usuário 1”, Id: 1 })
+CREATE (u2:Usuário {Nome: “Usuário 2”, Id: 2 })
+CREATE (m1:ModuloSistema {Nome: “Compras”})
+CREATE (m2:ModuloSistema {Nome: “Financeiro”})
+CREATE (u1)-[r1:PosssuiAcesso {NívelAcesso: “escrita”}]->(m1)
+CREATE (u1)-[r2:PosssuiAcesso {NívelAcesso: “leitura”}]->(m1)
+CREATE (u2)-[r3:PosssuiAcesso {NívelAcesso: “administrador”}]->(m1)
+CREATE (u2)-[r4:PosssuiAcesso {NívelAcesso: “escrita”}]->(m2)
+
+
+Algumas consultas usando o grafo acima:
+Com este pequeno grafo, podemos ter uma pequena ideia inicial de como é fazer consultas com o Neo4j. Eu pessoalmente acho que é muito mais fácil aprender a fazer consultas em grafos porque não há complicadores como tabelas, joins e essas complexidades de bancos relacionais. Basta “desenhar” o padrão que você deseja e a consulta já está praticamente pronta. Coloquei nos comentários das fotos todos os detalhes para tentar deixar claro o que está acontecendo em cada print :)
+MATCH (u:Usuário) return *
+MATCH (u:Usuário), (m:ModuloSistema) return *
+MATCH (u:Usuário{Id: 1}), (m:ModuloSistema) return *
+MATCH (n:Usuário)-[r:PosssuiAcesso]->(m:ModuloSistema) return *
+
+MATCH (n:Usuário)-[r:PosssuiAcesso{NívelAcesso: “escrita”}]->(m:ModuloSistema) 
+return n, r, m
+
+MATCH (n:Usuário)-[r:PosssuiAcesso{NívelAcesso: “escrita”}]->(m:ModuloSistema) 
+return n.Nome, r.NívelAcesso, m.Nome
+
+
+
+------------------------- Mais exemplos
+
+
+Criar um nó com uma propriedade:
+CREATE (n:Label {propriedade: valor})
+Exemplo:
+
+
+CREATE (p:Pessoa {nome: "João", idade: 30})
+Criar uma relação entre dois nós:
+
+MATCH (n1:Label1 {propriedade: valor1}), (n2:Label2 {propriedade: valor2})
+CREATE (n1)-[:RELACAO]->(n2)
+
+Exemplo:
+MATCH (p1:Pessoa {nome: "João"}), (p2:Pessoa {nome: "Maria"})
+CREATE (p1)-[:AMIGO]->(p2)
+Consultar todos os nós e relacionamentos:
+
+MATCH (n)
+RETURN n
+Consultar nós com base em uma propriedade:
+
+MATCH (n:Label {propriedade: valor})
+RETURN n
+
+Exemplo:
+MATCH (p:Pessoa {idade: 30})
+RETURN p
+Consultar relacionamentos entre nós:
+
+MATCH (n1)-[rel:RELACAO]->(n2)
+RETURN n1, rel, n2
+Exemplo:
+
+MATCH (p:Pessoa)-[rel:AMIGO]->(amigo)
+RETURN p, rel, amigo
+Atualizar propriedades de um nó:
+
+MATCH (n:Label {propriedade: valor})
+SET n.novaPropriedade = novoValor
+Exemplo:
+
+MATCH (p:Pessoa {nome: "João"})
+SET p.cidade = "São Paulo"
+
+Excluir um nó e suas relações:
+MATCH (n:Label {propriedade: valor})
+DETACH DELETE n
+Exemplo:
+
+MATCH (p:Pessoa {nome: "João"})
+DETACH DELETE p
+
+Esses são apenas alguns exemplos de comandos básicos no Neo4j usando a linguagem de consulta Cypher. O Neo4j possui uma grande variedade de comandos e recursos avançados para consultas complexas e análises em bancos de dados de grafo. A linguagem Cypher é poderosa e expressiva, permitindo que você modele e consulte seus dados de maneira intuitiva e eficiente.
+

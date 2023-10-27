@@ -1,0 +1,155 @@
+https://redis.io/commands
+O Redis é um banco de dados em memória de chave-valor, conhecido por sua alta velocidade e flexibilidade. Aqui estão alguns exemplos de comandos básicos no 
+
+
+- no Terminal ou no PowerShell
+wsl
+redis-server
+redis-cli
+
+----------------------------------
+
+
+----------------------- Redis Set - salva um valor em uma chave
+
+set key value
+> 127.0.0.1:6379> set name "Divyanshu Shekhar"
+  OK
+
+> 127.0.0.1:6379> set marks 90
+  OK
+
+----------------------- Redis Get - recupera um valor em uma chave
+
+> 127.0.0.1:6379> set name "Divyanshu Shekhar"
+  OK
+> 127.0.0.1:6379> get name
+  "Divyanshu Shekhar"
+> 127.0.0.1:6379> set name "Hritul Priya"
+  OK
+> 127.0.0.1:6379> get name
+  "Hritul Priya"
+
+
+----------------------- Redis keys * - recupera todas as chaves
+> 127.0.0.1:6379> keys *
+  1) "marks"
+  2) "name"
+
+
+----------------------- Delete uma key no Redis
+
+del key
+
+> 127.0.0.1:6379> del marks
+  (integer) 1
+> 127.0.0.1:6379> keys *
+  1) "name"
+
+----------------------- flushall Redis keys * - deleta todas keys no Redis – flushall
+This command deletes all the keys from the database.
+
+> 127.0.0.1:6379> keys *
+  1) "name"
+  2) "math"
+  3) "cs"
+> 127.0.0.1:6379> flushall
+  OK
+> 127.0.0.1:6379> keys *
+  (empty list or set)
+
+
+----------------------- strlen - Redis Length of Value - recupera o tamando de uma chave
+
+strlen key
+
+> 127.0.0.1:6379> strlen name
+  (integer) 2
+> 127.0.0.1:6379> set name "Divyanshu Shekhar"
+  OK
+> 127.0.0.1:6379> strlen name
+  (integer) 17
+
+----------------------- Redis Incremento e Decremento
+----------------------- Estes comandos só funcionam com dados numéricos
+> 127.0.0.1:6379> set num 17
+  OK
+> 127.0.0.1:6379> incr num
+  (integer) 18
+> 127.0.0.1:6379> decr num
+  (integer) 17
+
+
+> 127.0.0.1:6379> incrby num 10
+  (integer) 27
+> 127.0.0.1:6379> decrby num 5
+  (integer) 22
+
+
+----------------------- Estes comandos só funcionam com dados numéricos
+> 127.0.0.1:6379> set name "DS"
+  OK
+> 127.0.0.1:6379> incr name
+  (error) ERR value is not an integer or out of range
+
+
+----------------------- Redis Append - complementar um valor no final em uma key existente.
+
+append key value
+
+> 127.0.0.1:6379> set name "Divyanshu"
+  OK
+> 127.0.0.1:6379> append name " Shekhar"
+  (integer) 17
+> 127.0.0.1:6379> get name
+  "Divyanshu Shekhar"
+
+
+----------------------- Outros exemplos
+
+----------------------- Definir um valor em uma chave com tempo de expiração:
+SETEX chave tempo_em_segundos valor
+Exemplo:
+SETEX token 3600 "abc123"
+Isso definirá a chave "token" com o valor "abc123", que expirará após 3600 segundos (1 hora).
+
+----------------------- Verificar se uma chave existe:
+EXISTS chave
+Exemplo:
+
+EXISTS nome
+Resultado: (integer) 1 (se a chave existe) ou (integer) 0 (se a chave não existe).
+
+
+----------------------- Listas - Adicionar elementos a uma lista:
+----------------------- LPUSH chave elemento1 elemento2 ...
+
+LPUSH numeros 1 2 3 4 5
+
+
+Obter elementos de uma lista:
+LRANGE chave inicio fim
+Exemplo:
+----------------------- LRANGE numeros 0 -1
+Resultado: "1, 2, 3, 4, 5"
+
+
+
+----------------------- Conjuntos (sets):
+----------------------- Adicionar elementos a um conjunto:
+SADD chave elemento1 elemento2 ...
+Exemplo:
+
+SADD membros "Alice" "Bob" "Carlos"
+
+----------------------- Obter todos os elementos de um conjunto:
+SMEMBERS chave
+Exemplo:
+
+SMEMBERS membros
+Resultado: "Alice, Bob, Carlos"
+
+
+----------------------- 
+Esses são apenas alguns exemplos dos comandos mais básicos do Redis. O Redis possui muitos outros comandos avançados para diferentes tipos de dados e operações, como hashes, sorted sets, operações de união e interseção, transações, entre outros. É uma ferramenta poderosa para gerenciamento de cache, contagem, gerenciamento de sessões e muito mais.
+
